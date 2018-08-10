@@ -1,11 +1,14 @@
 # eslint-plugin-dependencies
 
-[![Build Status](https://travis-ci.org/zertosh/eslint-plugin-dependencies.svg?branch=master)](https://travis-ci.org/zertosh/eslint-plugin-dependencies)
+[![Build Status](https://travis-ci.org/triggerz/eslint-plugin-dependencies.svg?branch=master)](https://travis-ci.org/triggerz/eslint-plugin-dependencies)
+
+Forked from [https://github.com/zertosh/eslint-plugin-dependencies](https://github.com/zertosh/eslint-plugin-dependencies)
+This version adds a check for relative require's pointing outside of the module.
 
 ## Usage
 
 ```sh
-npm install eslint-plugin-dependencies
+npm install https://github.com/triggerz/eslint-plugin-dependencies
 ```
 
 In your `.eslintrc`:
@@ -62,7 +65,8 @@ Additionally, with the `types` option enabled, you can detect and prevent `impor
 
 ### `dependencies/no-unresolved`
 
-Checks that `require("…")`, `require.resolve(…)`, `import "…"` and `export … from "…"` reference modules that exist. Takes an `ignore` array of modules to ignore.
+Checks that `require("…")`, `require.resolve(…)`, `import "…"` and `export … from "…"` reference modules that exist. Relative `require` statements must point to files in the same module.
+Takes an `ignore` array of modules to ignore.
 
 ```json
 {
