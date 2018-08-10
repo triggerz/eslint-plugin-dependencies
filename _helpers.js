@@ -1,5 +1,7 @@
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
 var resolve = require('resolve');
 
 function StorageObject() {}
@@ -32,6 +34,26 @@ function resolveSync(x, opts) {
     }
   }
   return resolveCache[cacheKey];
+}
+
+// Get the module folder (= the parent folder containing package.json) for a given file.
+var _moduleFolderCache = oneTickCache();
+function getModuleFolder (childFolder) {
+  var moduleFolderCache = _moduleFolderCache();
+  if (!(childFolder in moduleFolderCache)) {
+    let folder = childFolder;
+    let counter = 0;
+    while (!fs.existsSync(path.join(folder, 'package.json'))) {
+      const previousFolder = folder;
+      folder = path.join(folder, '..');
+      if (folder === previousFolder || counter++ > 12) { // Seems like we're not going to find it.
+        folder = null;
+        break;
+      }
+    }
+    moduleFolderCache[childFolder] = folder;
+  }
+  return moduleFolderCache[childFolder];
 }
 
 function isRequireCall(node) {
@@ -132,6 +154,7 @@ function getIdNode(node) {
 module.exports = {
   StorageObject: StorageObject,
   oneTickCache: oneTickCache,
+  getModuleFolder: getModuleFolder,
   resolveSync: resolveSync,
   isRequireCall: isRequireCall,
   isRequireResolveCall: isRequireResolveCall,

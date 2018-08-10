@@ -22,6 +22,20 @@ module.exports = function(context) {
   function validate(node) {
     var id = helpers.getModuleId(node);
     if (ignore && ignore.indexOf(id) !== -1) return;
+
+    if (id.indexOf('.') === 0) {
+      const moduleFolder = helpers.getModuleFolder(target);
+      if (moduleFolder) {
+        const resolvedPath = path.join(resolveOpts.basedir, id);
+        if (resolvedPath.indexOf(moduleFolder) !== 0) {
+          return context.report({
+            node: helpers.getIdNode(node),
+            data: { id },
+            message: '"{{id}}" is a relative require statement pointing outside of this module'
+          });
+        }
+      }
+    }
     var resolved = helpers.resolveSync(id, resolveOpts);
     if (!resolved) {
       context.report({
